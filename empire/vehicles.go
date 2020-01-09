@@ -2,37 +2,30 @@ package empire
 
 import (
 	"fmt"
+	"gopkg.in/guregu/null.v3"
 )
 
 type Vehicle struct {
-	Name                 string   `json:"name"`
-	Model                string   `json:"model"`
-	Manufacturer         string   `json:"manufacturer"`
-	CostInCredits        string   `json:"cost_in_credits"`
-	Length               string   `json:"length"`
-	MaxAtmospheringSpeed string   `json:"max_atmosphering_speed"`
-	Crew                 string   `json:"crew"`
-	Passengers           string   `json:"passengers"`
-	CargoCapacity        string   `json:"cargo_capacity"`
-	Consumables          string   `json:"consumables"`
-	VehicleClass         string   `json:"vehicle_class"`
-	Pilots               []string `json:"pilots"`
-	Films                []string `json:"films"`
-	Created              string   `json:"created"`
-	Edited               string   `json:"edited"`
-	URL                  string   `json:"url"`
+	Id                   int         `json:"id,omitempty"`
+	Name                 null.String `json:"name,omitempty"`
+	Model                null.String `json:"model,omitempty"`
+	Manufacturer         null.String `json:"manufacturer,omitempty"`
+	CostInCredits        null.String `json:"cost_in_credits,omitempty"`
+	Length               null.String `json:"length,omitempty"`
+	MaxAtmospheringSpeed null.String `json:"max_atmosphering_speed,omitempty"`
+	Crew                 null.String `json:"crew,omitempty"`
+	Passengers           null.String `json:"passengers,omitempty"`
+	CargoCapacity        null.String `json:"cargo_capacity,omitempty"`
+	Consumables          null.String `json:"consumables,omitempty"`
+	VehicleClass         null.String `json:"vehicle_class,omitempty"`
+	Pilots               []Person    `json:"pilots,omitempty"`
+	Films                []Film      `json:"films,omitempty"`
+	Created              null.String `json:"created,omitempty"`
+	Edited               null.String `json:"edited,omitempty"`
 }
 
 func GetVehicle(id int) Vehicle {
 	var v Vehicle
 	GetHttp(fmt.Sprintf("/vehicles/%d", id), &v)
 	return v
-}
-
-func (v Vehicle) GetPilots() []Person {
-	return getPeople(v.Pilots)
-}
-
-func (v Vehicle) GetFilms() []Film {
-	return getFilms(v.Films)
 }

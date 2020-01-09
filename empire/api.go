@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 	"net/http"
@@ -133,23 +132,36 @@ func getStarships(urls []string) (starships []Starship) {
 	return
 }
 
-func ConnectSql() {
+func ConnectSql() *sql.DB {
 	conn, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/sw_data")
 	CheckErr(err)
+	return conn
+}
 
-	statement, err := conn.Prepare("SELECT * FROM film")
-	CheckErr(err)
+func GetFilmsSql(conn *sql.DB) (films []Film) {
+	defer conn.Close()
 
-	rows, err := statement.Query()
+	rows, err := conn.Query("SELECT * FROM film")
 	CheckErr(err)
+	var wg sync.WaitGroup
 
 	for rows.Next() {
+		wg.Add(5)
 		var film Film
 		rows.Scan(&film.Id, &film.Title, &film.EpisodeId, &film.OpeningCrawl, &film.Director, &film.Producer, &film.ReleaseDate, &film.Created, &film.Edited)
-		fmt.Println(PrettyPrintJson(film))
+
+		film.getPeople(ConnectSql(), &wg)
+		film.getPlanets(ConnectSql(), &wg)
+		film.getStarships(ConnectSql(), &wg)
+		film.getVehicles(ConnectSql(), &wg)
+		film.getSpecies(ConnectSql(), &wg)
+
+		wg.Wait()
+
+		films = append(films, film)
 	}
 
-	conn.Close()
+	return
 }
 
 func CheckErr(err error) {
@@ -158,8 +170,8 @@ func CheckErr(err error) {
 	}
 }
 
-func PrettyPrintJson(data interface{}) string {
+func PrettyPrintJson(data interface{}) []byte {
 	prettyString, err := json.MarshalIndent(data, "", "    ")
 	CheckErr(err)
-	return string(prettyString)
+	return prettyString
 }

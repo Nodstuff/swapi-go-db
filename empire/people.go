@@ -1,44 +1,31 @@
 package empire
 
-import "fmt"
+import (
+	"fmt"
+	"gopkg.in/guregu/null.v3"
+)
 
 type Person struct {
-	Name      string   `json:"name"`
-	Height    string   `json:"height"`
-	Mass      string   `json:"mass"`
-	HairColor string   `json:"hair_color"`
-	SkinColor string   `json:"skin_color"`
-	EyeColor  string   `json:"eye_color"`
-	BirthYear string   `json:"birth_year"`
-	Gender    string   `json:"gender"`
-	Homeworld string   `json:"homeworld"`
-	Films     []string `json:"films"`
-	Species   []string `json:"species"`
-	Vehicles  []string `json:"vehicles"`
-	Starships []string `json:"starships"`
-	Created   string   `json:"created"`
-	Edited    string   `json:"edited"`
-	URL       string   `json:"url"`
+	Id        int         `json:"id,omitempty"`
+	Name      null.String `json:"name,omitempty"`
+	Height    null.String `json:"height,omitempty"`
+	Mass      null.String `json:"mass,omitempty"`
+	HairColor null.String `json:"hair_color,omitempty"`
+	SkinColor null.String `json:"skin_color,omitempty"`
+	EyeColor  null.String `json:"eye_color,omitempty"`
+	BirthYear null.String `json:"birth_year,omitempty"`
+	Gender    null.String `json:"gender,omitempty"`
+	Homeworld null.String `json:"homeworld,omitempty"`
+	Films     []Film      `json:"films,omitempty"`
+	Species   []Species   `json:"species,omitempty"`
+	Vehicles  []Vehicle   `json:"vehicles,omitempty"`
+	Starships []Starship  `json:"starships,omitempty"`
+	Created   null.String `json:"created,omitempty"`
+	Edited    null.String `json:"edited,omitempty"`
 }
 
 func GetPerson(id int) Person {
 	var p Person
 	GetHttp(fmt.Sprintf("/people/%d", id), &p)
 	return p
-}
-
-func (p Person) GetFilms() []string {
-	return p.Films
-}
-
-func (p Person) GetSpecies() []Species {
-	return getSpecies(p.Species)
-}
-
-func (p Person) GetVehicles() []Vehicle {
-	return getVehicles(p.Vehicles)
-}
-
-func (p Person) GetStarships() []Starship {
-	return getStarships(p.Starships)
 }

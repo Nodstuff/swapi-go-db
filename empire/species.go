@@ -1,35 +1,31 @@
 package empire
 
-import "fmt"
+import (
+	"fmt"
+	"gopkg.in/guregu/null.v3"
+)
 
 type Species struct {
-	Name            string   `json:"name"`
-	Classification  string   `json:"classification"`
-	Designation     string   `json:"designation"`
-	AverageHeight   string   `json:"average_height"`
-	SkinColors      string   `json:"skin_colors"`
-	HairColors      string   `json:"hair_colors"`
-	EyeColors       string   `json:"eye_colors"`
-	AverageLifespan string   `json:"average_lifespan"`
-	Homeworld       string   `json:"homeworld"`
-	Language        string   `json:"language"`
-	People          []string `json:"people"`
-	Films           []string `json:"films"`
-	Created         string   `json:"created"`
-	Edited          string   `json:"edited"`
-	URL             string   `json:"url"`
+	Id              int         `json:"id,omitempty"`
+	Name            null.String `json:"name,omitempty"`
+	Classification  null.String `json:"classification,omitempty"`
+	Designation     null.String `json:"designation,omitempty"`
+	AverageHeight   null.String `json:"average_height,omitempty"`
+	SkinColors      null.String `json:"skin_colors,omitempty"`
+	HairColors      null.String `json:"hair_colors,omitempty"`
+	EyeColors       null.String `json:"eye_colors,omitempty"`
+	AverageLifespan null.String `json:"average_lifespan,omitempty"`
+	Homeworld       null.String `json:"homeworld,omitempty"`
+	Language        null.String `json:"language,omitempty"`
+	People          []Person    `json:"people,omitempty"`
+	Films           []Film      `json:"films,omitempty"`
+	Created         null.String `json:"created,omitempty"`
+	Edited          null.String `json:"edited,omitempty"`
+	URL             null.String `json:"url,omitempty"`
 }
 
 func GetSpecies(id int) Species {
 	var s Species
 	GetHttp(fmt.Sprintf("/species/%d", id), &s)
 	return s
-}
-
-func (s Species) GetPeople() []Person {
-	return getPeople(s.People)
-}
-
-func (s Species) GetFilms() []Film {
-	return getFilms(s.Films)
 }

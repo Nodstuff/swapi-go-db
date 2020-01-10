@@ -1,7 +1,7 @@
 package empire
 
 import (
-	"fmt"
+	"database/sql"
 	"gopkg.in/guregu/null.v3"
 )
 
@@ -24,8 +24,59 @@ type Species struct {
 	URL             null.String `json:"url,omitempty"`
 }
 
-func GetSpecies(id int) Species {
-	var s Species
-	GetHttp(fmt.Sprintf("/species/%d", id), &s)
-	return s
+func (s *Species) getPeople(db *sql.DB) {
+	var people []Person
+	rows, err := db.Query("select p.* from person p inner join species_person sp on p.id = sp.person_id where species_id = ?", s.Id)
+	CheckErr(err)
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var person Person
+		rows.Scan(
+			&person.Id,
+			&person.Name,
+			&person.Height,
+			&person.Mass,
+			&person.HairColor,
+			&person.SkinColor,
+			&person.EyeColor,
+			&person.BirthYear,
+			&person.Gender,
+			&person.Homeworld,
+			&person.Created,
+			&person.Edited)
+		people = append(people, person)
+	}
+
+	s.People = people
+}
+
+func (s *Species) getFilms(db *sql.DB) {
+	var films []Film
+
+	rows, err := db.Query("select f.* from film f inner join film_species fs on f.id = fs.film_id where fs.species_id = ?", s.Id)
+	CheckErr(err)
+	defer rows.Close()
+
+	for rows.Next() {
+		var film Film
+
+		err := rows.Scan(
+			&film.Id,
+			&film.Title,
+			&film.EpisodeId,
+			&film.OpeningCrawl,
+			&film.Director,
+			&film.Producer,
+			&film.ReleaseDate,
+			&film.Created,
+			&film.Edited)
+
+		CheckErr(err)
+
+		films = append(films, film)
+	}
+
+	s.Films = films
 }

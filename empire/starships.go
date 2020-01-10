@@ -1,7 +1,7 @@
 package empire
 
 import (
-	"fmt"
+	"database/sql"
 	"gopkg.in/guregu/null.v3"
 )
 
@@ -26,8 +26,59 @@ type Starship struct {
 	Edited               null.String `json:"edited,omitempty"`
 }
 
-func GetStarship(id int) Starship {
-	var s Starship
-	GetHttp(fmt.Sprintf("/starships/%d", id), &s)
-	return s
+func (s *Starship) getPilots(db *sql.DB) {
+	var pilots []Person
+	rows, err := db.Query("select p.* from person p inner join starship_pilot sp on p.id = sp.person_id where starship_id = ?", s.Id)
+	CheckErr(err)
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var pilot Person
+		rows.Scan(
+			&pilot.Id,
+			&pilot.Name,
+			&pilot.Height,
+			&pilot.Mass,
+			&pilot.HairColor,
+			&pilot.SkinColor,
+			&pilot.EyeColor,
+			&pilot.BirthYear,
+			&pilot.Gender,
+			&pilot.Homeworld,
+			&pilot.Created,
+			&pilot.Edited)
+		pilots = append(pilots, pilot)
+	}
+
+	s.Pilots = pilots
+}
+
+func (s *Starship) getFilms(db *sql.DB) {
+	var films []Film
+
+	rows, err := db.Query("select f.* from film f inner join film_starship fc on f.id = fc.film_id where fc.starship_id = ?", s.Id)
+	CheckErr(err)
+	defer rows.Close()
+
+	for rows.Next() {
+		var film Film
+
+		err := rows.Scan(
+			&film.Id,
+			&film.Title,
+			&film.EpisodeId,
+			&film.OpeningCrawl,
+			&film.Director,
+			&film.Producer,
+			&film.ReleaseDate,
+			&film.Created,
+			&film.Edited)
+
+		CheckErr(err)
+
+		films = append(films, film)
+	}
+
+	s.Films = films
 }

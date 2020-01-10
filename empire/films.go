@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"gopkg.in/guregu/null.v3"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -35,163 +34,149 @@ func (f Film) PrintCrawl() {
 	}
 }
 
-func (f *Film) getPeople(conn *sql.DB, wg *sync.WaitGroup) {
-	go func() {
-		var people []Person
-		defer conn.Close()
+func (f *Film) getPeople(db *sql.DB) {
+	var people []Person
 
-		rows, err := conn.Query("select * from person where id in (select person_id from film_character where film_id = ?)", f.Id)
-		CheckErr(err)
+	rows, err := db.Query("select p.* from person p inner join film_character fc on p.id = fc.person_id and fc.film_id = ?", f.Id)
+	CheckErr(err)
+	defer rows.Close()
 
-		for rows.Next() {
-			var person Person
-			rows.Scan(
-				&person.Id,
-				&person.Name,
-				&person.Height,
-				&person.Mass,
-				&person.HairColor,
-				&person.SkinColor,
-				&person.EyeColor,
-				&person.BirthYear,
-				&person.Gender,
-				&person.Homeworld,
-				&person.Created,
-				&person.Edited)
-			people = append(people, person)
-		}
-		f.Characters = people
+	for rows.Next() {
+		var person Person
+		rows.Scan(
+			&person.Id,
+			&person.Name,
+			&person.Height,
+			&person.Mass,
+			&person.HairColor,
+			&person.SkinColor,
+			&person.EyeColor,
+			&person.BirthYear,
+			&person.Gender,
+			&person.Homeworld,
+			&person.Created,
+			&person.Edited)
+		people = append(people, person)
+	}
 
-		wg.Done()
-	}()
+	f.Characters = people
 }
 
-func (f *Film) getPlanets(conn *sql.DB, wg *sync.WaitGroup) {
-	go func() {
-		var planets []Planet
-		defer conn.Close()
+func (f *Film) getPlanets(db *sql.DB) {
+	var planets []Planet
 
-		rows, err := conn.Query("select * from planet where id in (select planet_id from film_planet where film_id = ?)", f.Id)
-		CheckErr(err)
+	rows, err := db.Query("select p.* from planet p inner join film_planet fp on p.id = fp.planet_id where film_id = ?", f.Id)
+	CheckErr(err)
+	defer rows.Close()
 
-		for rows.Next() {
-			var planet Planet
-			rows.Scan(
-				&planet.Id,
-				&planet.Name,
-				&planet.RotationPeriod,
-				&planet.OrbitalPeriod,
-				&planet.Diameter,
-				&planet.Climate,
-				&planet.Gravity,
-				&planet.Terrain,
-				&planet.SurfaceWater,
-				&planet.Population,
-				&planet.Created,
-				&planet.Edited)
-			planets = append(planets, planet)
-		}
-		f.Planets = planets
-		wg.Done()
-	}()
+	for rows.Next() {
+		var planet Planet
+		rows.Scan(
+			&planet.Id,
+			&planet.Name,
+			&planet.RotationPeriod,
+			&planet.OrbitalPeriod,
+			&planet.Diameter,
+			&planet.Climate,
+			&planet.Gravity,
+			&planet.Terrain,
+			&planet.SurfaceWater,
+			&planet.Population,
+			&planet.Created,
+			&planet.Edited)
+		planets = append(planets, planet)
+	}
+
+	f.Planets = planets
 }
 
-func (f *Film) getStarships(conn *sql.DB, wg *sync.WaitGroup) {
-	go func() {
-		var ships []Starship
-		defer conn.Close()
+func (f *Film) getStarships(db *sql.DB) {
+	var ships []Starship
 
-		rows, err := conn.Query("select * from starship where id in (select starship_id from film_starship where film_id = ?)", f.Id)
-		CheckErr(err)
+	rows, err := db.Query("select s.* from starship s inner join film_starship fs on s.id = fs.starship_id and fs.film_id = ?", f.Id)
+	CheckErr(err)
+	defer rows.Close()
 
-		for rows.Next() {
-			var ship Starship
-			rows.Scan(
-				&ship.Id,
-				&ship.Name,
-				&ship.Model,
-				&ship.Manufacturer,
-				&ship.CostInCredits,
-				&ship.Length,
-				&ship.MaxAtmospheringSpeed,
-				&ship.Crew,
-				&ship.Passengers,
-				&ship.CargoCapacity,
-				&ship.Consumables,
-				&ship.HyperdriveRating,
-				&ship.MGLT,
-				&ship.StarshipClass,
-				&ship.Created,
-				&ship.Edited)
-			ships = append(ships, ship)
-		}
-		f.Starships = ships
+	for rows.Next() {
+		var ship Starship
+		rows.Scan(
+			&ship.Id,
+			&ship.Name,
+			&ship.Model,
+			&ship.Manufacturer,
+			&ship.CostInCredits,
+			&ship.Length,
+			&ship.MaxAtmospheringSpeed,
+			&ship.Crew,
+			&ship.Passengers,
+			&ship.CargoCapacity,
+			&ship.Consumables,
+			&ship.HyperdriveRating,
+			&ship.MGLT,
+			&ship.StarshipClass,
+			&ship.Created,
+			&ship.Edited)
+		ships = append(ships, ship)
+	}
 
-		wg.Done()
-	}()
+	f.Starships = ships
 }
 
-func (f *Film) getVehicles(conn *sql.DB, wg *sync.WaitGroup) {
-	go func() {
-		var vehicles []Vehicle
-		defer conn.Close()
+func (f *Film) getVehicles(db *sql.DB) {
+	var vehicles []Vehicle
 
-		rows, err := conn.Query("select * from vehicle where id in (select vehicle_id from film_vehicle where film_id = ?)", f.Id)
-		CheckErr(err)
+	rows, err := db.Query("select v.* from vehicle v inner join film_vehicle fv on v.id = fv.vehicle_id and fv.film_id = ?", f.Id)
+	CheckErr(err)
+	defer rows.Close()
 
-		for rows.Next() {
-			var vehicle Vehicle
-			rows.Scan(
-				&vehicle.Id,
-				&vehicle.Name,
-				&vehicle.Model,
-				&vehicle.Manufacturer,
-				&vehicle.CostInCredits,
-				&vehicle.Length,
-				&vehicle.MaxAtmospheringSpeed,
-				&vehicle.Crew,
-				&vehicle.Passengers,
-				&vehicle.CargoCapacity,
-				&vehicle.Consumables,
-				&vehicle.VehicleClass,
-				&vehicle.Created,
-				&vehicle.Edited)
-			vehicles = append(vehicles, vehicle)
-		}
-		f.Vehicles = vehicles
+	for rows.Next() {
+		var vehicle Vehicle
+		rows.Scan(
+			&vehicle.Id,
+			&vehicle.Name,
+			&vehicle.Model,
+			&vehicle.Manufacturer,
+			&vehicle.CostInCredits,
+			&vehicle.Length,
+			&vehicle.MaxAtmospheringSpeed,
+			&vehicle.Crew,
+			&vehicle.Passengers,
+			&vehicle.CargoCapacity,
+			&vehicle.Consumables,
+			&vehicle.VehicleClass,
+			&vehicle.Created,
+			&vehicle.Edited)
+		vehicles = append(vehicles, vehicle)
+	}
 
-		wg.Done()
-	}()
+	f.Vehicles = vehicles
 }
 
-func (f *Film) getSpecies(conn *sql.DB, wg *sync.WaitGroup) {
-	go func() {
-		var species []Species
-		defer conn.Close()
+func (f *Film) getSpecies(db *sql.DB) {
+	var species []Species
 
-		rows, err := conn.Query("select * from species where id in (select species_id from film_species where film_id = ?)", f.Id)
-		CheckErr(err)
+	rows, err := db.Query("select s.* from species s inner join film_species fs on s.id = fs.species_id and fs.film_id = ?", f.Id)
+	CheckErr(err)
+	defer rows.Close()
 
-		for rows.Next() {
-			var s Species
-			rows.Scan(
-				&s.Id,
-				&s.Name,
-				&s.Classification,
-				&s.Designation,
-				&s.AverageHeight,
-				&s.SkinColors,
-				&s.HairColors,
-				&s.EyeColors,
-				&s.AverageLifespan,
-				&s.Homeworld,
-				&s.Language,
-				&s.Created,
-				&s.Edited)
-			species = append(species, s)
-		}
-		f.Species = species
+	for rows.Next() {
+		var s Species
+		rows.Scan(
+			&s.Id,
+			&s.Name,
+			&s.Classification,
+			&s.Designation,
+			&s.AverageHeight,
+			&s.SkinColors,
+			&s.HairColors,
+			&s.EyeColors,
+			&s.AverageLifespan,
+			&s.Homeworld,
+			&s.Language,
+			&s.Created,
+			&s.Edited)
+		species = append(species, s)
+	}
 
-		wg.Done()
-	}()
+	f.Species = species
 }

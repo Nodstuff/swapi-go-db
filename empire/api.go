@@ -6,13 +6,20 @@ import (
 	"swapi-go-db/empire/database"
 )
 
+var cacheMap = make(map[string][]interface{})
+
 func ConnectDB() {
 	var err error
 	database.DBCon, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/sw_data")
 	CheckErr(err)
 }
 
-func GetFilms() (films []Film) {
+func GetFilms() (films []interface{}) {
+
+	if res, ok := cacheMap["films"]; ok {
+		return res
+	}
+
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM film")
@@ -44,10 +51,17 @@ func GetFilms() (films []Film) {
 		films = append(films, film)
 	}
 
+	cacheMap["films"] = films
+
 	return
 }
 
-func GetPeople() (people []Person) {
+func GetPeople() (people []interface{}) {
+
+	if res, ok := cacheMap["people"]; ok {
+		return res
+	}
+
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM person")
@@ -79,10 +93,17 @@ func GetPeople() (people []Person) {
 		people = append(people, person)
 	}
 
+	cacheMap["people"] = people
+
 	return
 }
 
-func GetPlanets() (planets []Planet) {
+func GetPlanets() (planets []interface{}) {
+
+	if res, ok := cacheMap["planets"]; ok {
+		return res
+	}
+
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM planet")
@@ -111,10 +132,17 @@ func GetPlanets() (planets []Planet) {
 		planets = append(planets, planet)
 	}
 
+	cacheMap["planets"] = planets
+
 	return
 }
 
-func GetSpecies() (species []Species) {
+func GetSpecies() (species []interface{}) {
+
+	if res, ok := cacheMap["species"]; ok {
+		return res
+	}
+
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM species")
@@ -144,10 +172,17 @@ func GetSpecies() (species []Species) {
 		species = append(species, s)
 	}
 
+	cacheMap["species"] = species
+
 	return
 }
 
-func GetStarships() (ships []Starship) {
+func GetStarships() (ships []interface{}) {
+
+	if res, ok := cacheMap["starships"]; ok {
+		return res
+	}
+
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM starship")
@@ -180,10 +215,17 @@ func GetStarships() (ships []Starship) {
 		ships = append(ships, ship)
 	}
 
+	cacheMap["starships"] = ships
+
 	return
 }
 
-func GetVehicles() (vehicles []Vehicle) {
+func GetVehicles() (vehicles []interface{}) {
+
+	if res, ok := cacheMap["vehicles"]; ok {
+		return res
+	}
+
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM vehicle")
@@ -213,6 +255,8 @@ func GetVehicles() (vehicles []Vehicle) {
 
 		vehicles = append(vehicles, vehicle)
 	}
+
+	cacheMap["vehicles"] = vehicles
 
 	return
 }

@@ -2,6 +2,8 @@ package empire
 
 import (
 	"encoding/json"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -14,15 +16,16 @@ type StarWarsServer struct {
 func NewStarWarsServer() *StarWarsServer {
 	s := new(StarWarsServer)
 
-	router := http.NewServeMux()
-	router.Handle("/films", http.HandlerFunc(s.filmHandler))
-	router.Handle("/people", http.HandlerFunc(s.peopleHandler))
-	router.Handle("/planets", http.HandlerFunc(s.planetHandler))
-	router.Handle("/species", http.HandlerFunc(s.speciesHandler))
-	router.Handle("/starships", http.HandlerFunc(s.starshipHandler))
-	router.Handle("/vehicles", http.HandlerFunc(s.vehicleHandler))
+	router := mux.NewRouter()
 
-	s.Handler = router
+	router.HandleFunc("/films", s.filmHandler)
+	router.HandleFunc("/people", s.peopleHandler)
+	router.HandleFunc("/planets", s.planetHandler)
+	router.HandleFunc("/species", s.speciesHandler)
+	router.HandleFunc("/starships", s.starshipHandler)
+	router.HandleFunc("/vehicles", s.vehicleHandler)
+
+	s.Handler = handlers.CompressHandler(router)
 
 	return s
 }

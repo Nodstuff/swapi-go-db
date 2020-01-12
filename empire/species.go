@@ -26,8 +26,8 @@ type Species struct {
 
 func (s *Species) getPeople(db *sql.DB) {
 	var people []Person
-	rows, err := db.Query("select p.* from person p inner join species_person sp on p.id = sp.person_id where species_id = ?", s.Id)
-	CheckErr(err)
+	rows, err := db.Query("select p.* from Person p inner join species_person sp on p.id = sp.person_id where species_id = ?", s.Id)
+	checkErr(err)
 
 	defer rows.Close()
 
@@ -56,7 +56,7 @@ func (s *Species) getFilms(db *sql.DB) {
 	var films []Film
 
 	rows, err := db.Query("select f.* from film f inner join film_species fs on f.id = fs.film_id where fs.species_id = ?", s.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -73,7 +73,7 @@ func (s *Species) getFilms(db *sql.DB) {
 			&film.Created,
 			&film.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		films = append(films, film)
 	}

@@ -14,6 +14,8 @@ type StarWarsServer struct {
 }
 
 func NewStarWarsServer() *StarWarsServer {
+	connectDB()
+
 	s := new(StarWarsServer)
 
 	router := mux.NewRouter()
@@ -32,30 +34,30 @@ func NewStarWarsServer() *StarWarsServer {
 
 func (s *StarWarsServer) filmHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", jsonContentType)
-	json.NewEncoder(w).Encode(GetFilms())
+	json.NewEncoder(w).Encode(getFilms())
 }
 
 func (s *StarWarsServer) peopleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", jsonContentType)
-	json.NewEncoder(w).Encode(GetPeople())
+	json.NewEncoder(w).Encode(getPeople())
 }
 
 func (s *StarWarsServer) planetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", jsonContentType)
-	json.NewEncoder(w).Encode(GetPlanets())
+	json.NewEncoder(w).Encode(getPlanets())
 }
 
 func (s *StarWarsServer) speciesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", jsonContentType)
-	json.NewEncoder(w).Encode(GetSpecies())
+	json.NewEncoder(w).Encode(getSpecies())
 }
 
 func (s *StarWarsServer) starshipHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", jsonContentType)
-	json.NewEncoder(w).Encode(GetStarships())
+	json.NewEncoder(w).Encode(getStarships())
 }
 
 func (s *StarWarsServer) vehicleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", jsonContentType)
-	json.NewEncoder(w).Encode(GetVehicles())
+	json.NewEncoder(w).Encode(getVehicles())
 }

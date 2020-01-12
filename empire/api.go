@@ -8,13 +8,13 @@ import (
 
 var cacheMap = make(map[string][]interface{})
 
-func ConnectDB() {
+func connectDB() {
 	var err error
 	database.DBCon, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/sw_data")
-	CheckErr(err)
+	checkErr(err)
 }
 
-func GetFilms() (films []interface{}) {
+func getFilms() (films []interface{}) {
 
 	if res, ok := cacheMap["films"]; ok {
 		return res
@@ -23,7 +23,7 @@ func GetFilms() (films []interface{}) {
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM film")
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -40,7 +40,7 @@ func GetFilms() (films []interface{}) {
 			&film.Created,
 			&film.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		film.getPeople(db)
 		film.getPlanets(db)
@@ -56,7 +56,7 @@ func GetFilms() (films []interface{}) {
 	return
 }
 
-func GetPeople() (people []interface{}) {
+func getPeople() (people []interface{}) {
 
 	if res, ok := cacheMap["people"]; ok {
 		return res
@@ -64,8 +64,8 @@ func GetPeople() (people []interface{}) {
 
 	db := database.DBCon
 
-	rows, err := db.Query("SELECT * FROM person")
-	CheckErr(err)
+	rows, err := db.Query("SELECT * FROM Person")
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -84,7 +84,7 @@ func GetPeople() (people []interface{}) {
 			&person.Created,
 			&person.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		person.getStarships(db)
 		person.getVehicles(db)
@@ -98,7 +98,7 @@ func GetPeople() (people []interface{}) {
 	return
 }
 
-func GetPlanets() (planets []interface{}) {
+func getPlanets() (planets []interface{}) {
 
 	if res, ok := cacheMap["planets"]; ok {
 		return res
@@ -107,7 +107,7 @@ func GetPlanets() (planets []interface{}) {
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM planet")
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -137,7 +137,7 @@ func GetPlanets() (planets []interface{}) {
 	return
 }
 
-func GetSpecies() (species []interface{}) {
+func getSpecies() (species []interface{}) {
 
 	if res, ok := cacheMap["species"]; ok {
 		return res
@@ -146,7 +146,7 @@ func GetSpecies() (species []interface{}) {
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM species")
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -177,7 +177,7 @@ func GetSpecies() (species []interface{}) {
 	return
 }
 
-func GetStarships() (ships []interface{}) {
+func getStarships() (ships []interface{}) {
 
 	if res, ok := cacheMap["starships"]; ok {
 		return res
@@ -186,7 +186,7 @@ func GetStarships() (ships []interface{}) {
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM starship")
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -220,7 +220,7 @@ func GetStarships() (ships []interface{}) {
 	return
 }
 
-func GetVehicles() (vehicles []interface{}) {
+func getVehicles() (vehicles []interface{}) {
 
 	if res, ok := cacheMap["vehicles"]; ok {
 		return res
@@ -229,7 +229,7 @@ func GetVehicles() (vehicles []interface{}) {
 	db := database.DBCon
 
 	rows, err := db.Query("SELECT * FROM vehicle")
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -261,7 +261,7 @@ func GetVehicles() (vehicles []interface{}) {
 	return
 }
 
-func CheckErr(err error) {
+func checkErr(err error) {
 	if err != nil {
 		panic(err)
 	}

@@ -2,7 +2,6 @@ package empire
 
 import (
 	"database/sql"
-	"fmt"
 	"gopkg.in/guregu/null.v3"
 )
 
@@ -23,16 +22,10 @@ type Planet struct {
 	Edited         null.String `json:"edited,omitempty"`
 }
 
-func GetPlanet(id int) Planet {
-	var p Planet
-	GetHttp(fmt.Sprintf("/planets/%d", id), &p)
-	return p
-}
-
 func (p *Planet) getResidents(db *sql.DB) {
 	var people []Person
-	rows, err := db.Query("SELECT * FROM person WHERE homeworld = ?", p.Id)
-	CheckErr(err)
+	rows, err := db.Query("SELECT * FROM Person WHERE homeworld = ?", p.Id)
+	checkErr(err)
 
 	defer rows.Close()
 
@@ -61,7 +54,7 @@ func (p *Planet) getFilms(db *sql.DB) {
 	var films []Film
 
 	rows, err := db.Query("select f.* from film f inner join film_planet fc on f.id = fc.film_id where fc.planet_id = ?", p.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -78,7 +71,7 @@ func (p *Planet) getFilms(db *sql.DB) {
 			&film.Created,
 			&film.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		films = append(films, film)
 	}

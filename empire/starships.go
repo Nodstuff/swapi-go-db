@@ -28,8 +28,8 @@ type Starship struct {
 
 func (s *Starship) getPilots(db *sql.DB) {
 	var pilots []Person
-	rows, err := db.Query("select p.* from person p inner join starship_pilot sp on p.id = sp.person_id where starship_id = ?", s.Id)
-	CheckErr(err)
+	rows, err := db.Query("select p.* from Person p inner join starship_pilot sp on p.id = sp.person_id where starship_id = ?", s.Id)
+	checkErr(err)
 
 	defer rows.Close()
 
@@ -58,7 +58,7 @@ func (s *Starship) getFilms(db *sql.DB) {
 	var films []Film
 
 	rows, err := db.Query("select f.* from film f inner join film_starship fc on f.id = fc.film_id where fc.starship_id = ?", s.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -75,7 +75,7 @@ func (s *Starship) getFilms(db *sql.DB) {
 			&film.Created,
 			&film.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		films = append(films, film)
 	}

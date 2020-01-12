@@ -37,8 +37,8 @@ func (f Film) PrintCrawl() {
 func (f *Film) getPeople(db *sql.DB) {
 	var people []Person
 
-	rows, err := db.Query("select p.* from person p inner join film_character fc on p.id = fc.person_id and fc.film_id = ?", f.Id)
-	CheckErr(err)
+	rows, err := db.Query("select p.* from Person p inner join film_character fc on p.id = fc.person_id and fc.film_id = ?", f.Id)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -66,7 +66,7 @@ func (f *Film) getPlanets(db *sql.DB) {
 	var planets []Planet
 
 	rows, err := db.Query("select p.* from planet p inner join film_planet fp on p.id = fp.planet_id where film_id = ?", f.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -94,7 +94,7 @@ func (f *Film) getStarships(db *sql.DB) {
 	var ships []Starship
 
 	rows, err := db.Query("select s.* from starship s inner join film_starship fs on s.id = fs.starship_id and fs.film_id = ?", f.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -126,7 +126,7 @@ func (f *Film) getVehicles(db *sql.DB) {
 	var vehicles []Vehicle
 
 	rows, err := db.Query("select v.* from vehicle v inner join film_vehicle fv on v.id = fv.vehicle_id and fv.film_id = ?", f.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -156,7 +156,7 @@ func (f *Film) getSpecies(db *sql.DB) {
 	var species []Species
 
 	rows, err := db.Query("select s.* from species s inner join film_species fs on s.id = fs.species_id and fs.film_id = ?", f.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {

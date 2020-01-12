@@ -26,8 +26,8 @@ type Vehicle struct {
 
 func (v *Vehicle) getPilots(db *sql.DB) {
 	var pilots []Person
-	rows, err := db.Query("select p.* from person p inner join vehicle_pilot sp on p.id = sp.person_id where vehicle_id = ?", v.Id)
-	CheckErr(err)
+	rows, err := db.Query("select p.* from Person p inner join vehicle_pilot sp on p.id = sp.person_id where vehicle_id = ?", v.Id)
+	checkErr(err)
 
 	defer rows.Close()
 
@@ -56,7 +56,7 @@ func (v *Vehicle) getFilms(db *sql.DB) {
 	var films []Film
 
 	rows, err := db.Query("select f.* from film f inner join film_vehicle fc on f.id = fc.film_id where fc.vehicle_id = ?", v.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -73,7 +73,7 @@ func (v *Vehicle) getFilms(db *sql.DB) {
 			&film.Created,
 			&film.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		films = append(films, film)
 	}

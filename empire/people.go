@@ -28,7 +28,7 @@ func (p *Person) getFilms(db *sql.DB) {
 	var films []Film
 
 	rows, err := db.Query("select f.* from film f inner join film_character fc on f.id = fc.film_id where fc.person_id = ?", p.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -45,7 +45,7 @@ func (p *Person) getFilms(db *sql.DB) {
 			&film.Created,
 			&film.Edited)
 
-		CheckErr(err)
+		checkErr(err)
 
 		films = append(films, film)
 	}
@@ -57,7 +57,7 @@ func (p *Person) getStarships(db *sql.DB) {
 	var ships []Starship
 
 	rows, err := db.Query("select s.* from starship s inner join starship_pilot sp on s.id = sp.starship_id where person_id = ?", p.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -89,7 +89,7 @@ func (p *Person) getVehicles(db *sql.DB) {
 	var vehicles []Vehicle
 
 	rows, err := db.Query("select v.* from vehicle v inner join vehicle_pilot vp on v.id = vp.vehicle_id where person_id = ?", p.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -119,7 +119,7 @@ func (p *Person) getSpecies(db *sql.DB) {
 	var species []Species
 
 	rows, err := db.Query("select s.* from species s inner join species_person sp on s.id = sp.species_id where person_id = ?", p.Id)
-	CheckErr(err)
+	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {

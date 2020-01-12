@@ -1,9 +1,16 @@
 package empire
 
 import (
+	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"swapi-go-db/empire/database"
 )
+
+func ConnectDB() {
+	var err error
+	database.DBCon, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/sw_data")
+	CheckErr(err)
+}
 
 func GetFilms() (films []Film) {
 	db := database.DBCon

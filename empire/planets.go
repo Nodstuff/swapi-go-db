@@ -24,7 +24,7 @@ type Planet struct {
 
 func (p *Planet) getResidents(db *sql.DB) {
 	var people []Person
-	rows, err := db.Query("SELECT * FROM Person WHERE homeworld = ?", p.Id)
+	rows, err := db.Query("SELECT * FROM person WHERE homeworld = ?", p.Id)
 	checkErr(err)
 
 	defer rows.Close()

@@ -37,7 +37,7 @@ func (f Film) PrintCrawl() {
 func (f *Film) getPeople(db *sql.DB) {
 	var people []Person
 
-	rows, err := db.Query("select p.* from Person p inner join film_character fc on p.id = fc.person_id and fc.film_id = ?", f.Id)
+	rows, err := db.Query("select p.* from person p inner join film_character fc on p.id = fc.person_id and fc.film_id = ?", f.Id)
 	checkErr(err)
 	defer rows.Close()
 

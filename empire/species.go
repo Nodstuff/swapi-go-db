@@ -26,7 +26,7 @@ type Species struct {
 
 func (s *Species) getPeople(db *sql.DB) {
 	var people []Person
-	rows, err := db.Query("select p.* from Person p inner join species_person sp on p.id = sp.person_id where species_id = ?", s.Id)
+	rows, err := db.Query("select p.* from person p inner join species_person sp on p.id = sp.person_id where species_id = ?", s.Id)
 	checkErr(err)
 
 	defer rows.Close()

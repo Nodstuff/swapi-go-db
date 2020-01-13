@@ -64,7 +64,7 @@ func getPeople() (people []interface{}) {
 
 	db := database.DBCon
 
-	rows, err := db.Query("SELECT * FROM Person")
+	rows, err := db.Query("SELECT * FROM person")
 	checkErr(err)
 	defer rows.Close()
 

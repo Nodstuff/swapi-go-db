@@ -26,7 +26,7 @@ type Vehicle struct {
 
 func (v *Vehicle) getPilots(db *sql.DB) {
 	var pilots []Person
-	rows, err := db.Query("select p.* from Person p inner join vehicle_pilot sp on p.id = sp.person_id where vehicle_id = ?", v.Id)
+	rows, err := db.Query("select p.* from person p inner join vehicle_pilot sp on p.id = sp.person_id where vehicle_id = ?", v.Id)
 	checkErr(err)
 
 	defer rows.Close()

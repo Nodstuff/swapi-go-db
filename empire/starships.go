@@ -28,7 +28,7 @@ type Starship struct {
 
 func (s *Starship) getPilots(db *sql.DB) {
 	var pilots []Person
-	rows, err := db.Query("select p.* from Person p inner join starship_pilot sp on p.id = sp.person_id where starship_id = ?", s.Id)
+	rows, err := db.Query("select p.* from person p inner join starship_pilot sp on p.id = sp.person_id where starship_id = ?", s.Id)
 	checkErr(err)
 
 	defer rows.Close()

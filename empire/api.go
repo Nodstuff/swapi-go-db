@@ -2,7 +2,7 @@ package empire
 
 import (
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 	"swapi-go-db/empire/database"
 )
 
@@ -10,7 +10,7 @@ var cacheMap = make(map[string][]interface{})
 
 func connectDB() {
 	var err error
-	database.DBCon, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/sw_data")
+	database.DBCon, err = sql.Open("sqlite3", "./sw_data.db")
 	checkErr(err)
 }
 

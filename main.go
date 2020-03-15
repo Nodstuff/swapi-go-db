@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"swapi-go-db/empire"
 )
 
 func main() {
-	log.Fatalln(http.ListenAndServe(":8080", empire.NewStarWarsServer()))
+	fmt.Println("Starting server")
+	log.Fatalln(http.ListenAndServe(":8100", empire.NewStarWarsServer()))
 }
